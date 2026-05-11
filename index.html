@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISUFORGE AI — Prompt Engine Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <!-- MOBILE TOGGLE -->
+    <div class="mobile-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="app-container">
+
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="logo-box">
+                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                <h2>VISUFORGE</h2>
+                <span>AI PROMPT ENGINE</span>
+            </div>
+
+            <nav>
+                <div class="menu-section-label">WORKSPACE</div>
+                <ul class="menu">
+                    <li class="active" onclick="showPage('dashboard', this)" data-page="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </li>
+                    <li onclick="showPage('studio', this)" data-page="studio">
+                        <i class="fas fa-bolt"></i> Prompt Studio
+                    </li>
+                    <li onclick="showPage('visual', this)" data-page="visual">
+                        <i class="fas fa-palette"></i> Visual DNA
+                    </li>
+                    <li onclick="showPage('campaign', this)" data-page="campaign">
+                        <i class="fas fa-layer-group"></i> Campaign Builder
+                    </li>
+                </ul>
+
+                <div class="menu-section-label">OUTPUT</div>
+                <ul class="menu">
+                    <li onclick="showPage('assets', this)" data-page="assets">
+                        <i class="fas fa-cube"></i> Assets Premium
+                    </li>
+                    <li onclick="showPage('export', this)" data-page="export">
+                        <i class="fas fa-file-export"></i> Export Center
+                    </li>
+                    <li onclick="showPage('history', this)" data-page="history">
+                        <i class="fas fa-clock-rotate-left"></i> History Vault
+                    </li>
+                </ul>
+
+                <div class="menu-section-label">SYSTÈME</div>
+                <ul class="menu">
+                    <li onclick="showPage('settings', this)" data-page="settings">
+                        <i class="fas fa-gear"></i> Paramètres
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="engine-status">
+                <div class="engine-dot"></div>
+                <div>
+                    <p class="engine-label">PROMPT ENGINE</p>
+                    <p class="engine-sub">Actif — Mode Premium</p>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- ===================== MAIN CONTENT ===================== -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="top-header">
+                <div class="topbar-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Vue d'ensemble de votre activité créative</p>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-stat">
+                        <i class="fas fa-bolt"></i>
+                        <span id="topbarPrompts">0</span> prompts
+                    </div>
+                    <div class="topbar-stat">
+                        <i class="fas fa-star"></i>
+                        <span id="topbarFavoris">0</span> favoris
+                    </div>
+                    <div class="topbar-stat" id="topbarAssets">
+                        <i class="fas fa-cube"></i>
+                        <span id="topbarAssetsCount">0</span> assets
+                    </div>
+                    <div class="platform-badge" id="activePlatform">Midjourney</div>
+                </div>
+            </header>
+
+            <!-- ============= PAGE : DASHBOARD ============= -->
+            <section id="page-dashboard" class="page-section active-section">
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                        <h3 id="countPrompts">0</h3>
+                        <p>Prompts Générés</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fas fa-star"></i></div>
+                        <h3 id="countFavoris">0</h3>
+                        <p>Favoris</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-layer-group"></i></div>
+                        <h3>25</h3>
+                        <p>Secteurs Disponibles</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-wand-magic-sparkles"></i></div>
+                        <h3>3</h3>
+                        <p>Plateformes IA</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+
+                    <div class="welcome-panel">
+                        <div class="welcome-badge">PREMIUM ENGINE</div>
+                        <h2>Bienvenue dans<br><span>VISUFORGE AI</span></h2>
+                        <p>Configurez votre ADN visuel, sélectionnez votre secteur et générez des prompts
+                            ultra-cohérents pour Midjourney, Leonardo et DALL-E en quelques secondes.</p>
+                        <button class="cta-start"
+                            onclick="showPage('studio', document.querySelector('[data-page=studio]'))">
+                            <i class="fas fa-bolt"></i> Démarrer le Studio
+                        </button>
+                    </div>
+
+                    <div class="quick-actions-panel">
+                        <h3><i class="fas fa-zap"></i> Actions Rapides</h3>
+                        <div class="quick-list">
+                            <div class="quick-item"
+                                onclick="showPage('studio', document.querySelector('[data-page=studio]'))">
+                                <i class="fas fa-bolt"></i>
+                                <div>
+                                    <p>Nouveau Prompt</p>
+                                    <span>Générer maintenant</span>
+                                </div>
+                                <i class="fas fa-chevron-right arrow"></i>
+                            </div>
+                            <div class="quick-item"
+                                onclick="showPage('visual', document.querySelector('[data-page=visual]'))">
+                                <i class="fas fa-palette"></i>
+                                <div>
+                                    <p>Configurer ADN Visuel</p>
+                                    <span>Palette, typo, assets</span>
+                                </div>
+                                <i class="fas fa-chevron-right arrow"></i>
+                            </div>
+                            <div class="quick-item"
+                                onclick="showPage('campaign', document.querySelector('[data-page=campaign]'))">
+                                <i class="fas fa-layer-group"></i>
+                                <div>
+                                    <p>Campaign Builder</p>
+                                    <span>Séquence 3 posts</span>
+                                </div>
+                                <i class="fas fa-chevron-right arrow"></i>
+                            </div>
+                            <div class="quick-item"
+                                onclick="showPage('history', document.querySelector('[data-page=history]'))">
+                                <i class="fas fa-clock-rotate-left"></i>
+                                <div>
+                                    <p>History Vault</p>
+                                    <span>Revoir mes prompts</span>
+                                </div>
+                                <i class="fas fa-chevron-right arrow"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="platform-panel">
+                        <h3>Plateformes Actives</h3>
+                        <div class="platform-list">
+                            <div class="platform-item active" onclick="setPlatform('Midjourney')">
+                                <div class="platform-dot mj"></div>
+                                <div>
+                                    <p>Midjourney</p>
+                                    <span>--v 6.1 --style raw</span>
+                                </div>
+                                <i class="fas fa-check check-icon"></i>
+                            </div>
+                            <div class="platform-item" onclick="setPlatform('Leonardo')">
+                                <div class="platform-dot leo"></div>
+                                <div>
+                                    <p>Leonardo AI</p>
+                                    <span>Phoenix · Kino XL</span>
+                                </div>
+                            </div>
+                            <div class="platform-item" onclick="setPlatform('DALL-E')">
+                                <div class="platform-dot dalle"></div>
+                                <div>
+                                    <p>DALL-E 3</p>
+                                    <span>OpenAI · HD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="last-prompt-panel" id="lastPromptPanel">
+                        <h3><i class="fas fa-clock-rotate-left"></i> Dernier Prompt Généré</h3>
+                        <div class="last-prompt-content" id="lastPromptContent">
+                            <p class="empty-state"><i class="fas fa-ghost"></i><br>Aucun prompt généré encore.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ============= PAGE : PROMPT STUDIO ============= -->
+            <section id="page-studio" class="page-section">
+
+                <div class="studio-layout">
+
+                    <!-- LEFT : CONFIGURATEUR -->
+                    <div class="studio-left">
+
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2><i class="fas fa-sliders"></i> Configuration</h2>
+                                <div class="platform-selector">
+                                    <button class="plat-btn active"
+                                        onclick="selectPlatform(this,'Midjourney')">MJ</button>
+                                    <button class="plat-btn" onclick="selectPlatform(this,'Leonardo')">LEO</button>
+                                    <button class="plat-btn" onclick="selectPlatform(this,'DALLE')">DALL-E</button>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+
+                                <div class="form-group full">
+                                    <label><i class="fas fa-industry"></i> Secteur</label>
+                                    <select id="niche" onchange="onSectorChange()">
+                                        <optgroup label="Luxe & Mode">
+                                            <option value="parfum">Parfum / Cosmétique</option>
+                                            <option value="mode">Mode / Vêtements</option>
+                                            <option value="joaillerie">Joaillerie / Bijoux</option>
+                                            <option value="maroquinerie">Maroquinerie / Sacs</option>
+                                            <option value="montres">Montres de Luxe</option>
+                                        </optgroup>
+                                        <optgroup label="Immobilier & Architecture">
+                                            <option value="immobilier">Immobilier Premium</option>
+                                            <option value="architecture">Architecture / Design</option>
+                                            <option value="decoration">Décoration Intérieure</option>
+                                        </optgroup>
+                                        <optgroup label="Tech & Innovation">
+                                            <option value="tech">Accessoires Tech</option>
+                                            <option value="startup">Startup / SaaS</option>
+                                            <option value="gaming">Gaming / Esport</option>
+                                        </optgroup>
+                                        <optgroup label="Food & Lifestyle">
+                                            <option value="restaurant">Restaurant / Food</option>
+                                            <option value="coffee">Coffee / Café</option>
+                                            <option value="wine">Vins & Spiritueux</option>
+                                            <option value="fitness">Fitness / Sport</option>
+                                            <option value="wellness">Wellness / Spa</option>
+                                        </optgroup>
+                                        <optgroup label="Services & Finance">
+                                            <option value="finance">Finance / Banque</option>
+                                            <option value="assurance">Assurance</option>
+                                            <option value="consulting">Consulting / RH</option>
+                                            <option value="education">Éducation / Formation</option>
+                                            <option value="sante">Santé / Clinique</option>
+                                        </optgroup>
+                                        <optgroup label="Événementiel & Médias">
+                                            <option value="evenement">Événementiel</option>
+                                            <option value="musique">Musique / Label</option>
+                                            <option value="hotel">Hôtellerie / Travel</option>
+                                            <option value="automobile">Automobile</option>
+                                            <option value="beaute">Beauté / Salon</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div id="compatibilityBar" class="compatibility-bar" style="display:none">
+                                    <div class="compat-dot" id="compatDot"></div>
+                                    <span id="compatMessage">Combinaison optimale</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-image"></i> Type de Visuel</label>
+                                    <select id="visuel">
+                                        <option value="flyer">Flyer Publicitaire</option>
+                                        <option value="product">PNG Produit</option>
+                                        <option value="logo">Logo Premium</option>
+                                        <option value="background">Background</option>
+                                        <option value="post">Post Social Media</option>
+                                        <option value="banner">Bannière Web</option>
+                                        <option value="mockup">Mockup</option>
+                                        <option value="packshot">Packshot</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-paintbrush"></i> Style</label>
+                                    <select id="style">
+                                        <option value="luxe">Luxe Premium</option>
+                                        <option value="moderne">Moderne Épuré</option>
+                                        <option value="cinematique">Cinématique</option>
+                                        <option value="editorial">Éditorial</option>
+                                        <option value="hightech">High-Tech</option>
+                                        <option value="agressif">Agressif Commercial</option>
+                                        <option value="fashion">Fashion Magazine</option>
+                                        <option value="minimaliste">Minimaliste</option>
+                                        <option value="organique">Organique / Nature</option>
+                                        <option value="brutalist">Brutalist</option>
+                                        <option value="retro">Rétro / Vintage</option>
+                                        <option value="neon">Néon / Cyberpunk</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-droplet"></i> Palette</label>
+                                    <select id="couleur">
+                                        <option value="noir-or">Noir & Or</option>
+                                        <option value="bleu-neon">Bleu Néon</option>
+                                        <option value="rouge-noir">Rouge & Noir</option>
+                                        <option value="beige-blanc">Beige & Blanc</option>
+                                        <option value="vert-or">Vert & Or</option>
+                                        <option value="rose-nude">Rose Nude</option>
+                                        <option value="blanc-argent">Blanc & Argent</option>
+                                        <option value="violet-neon">Violet Néon</option>
+                                        <option value="terre">Tons Terre</option>
+                                        <option value="marine">Bleu Marine</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-font"></i> Format</label>
+                                    <select id="format">
+                                        <optgroup label="📐 Impression">
+                                            <option value="A4">A4 — 210×297mm</option>
+                                            <option value="A3">A3 — 297×420mm</option>
+                                            <option value="A5">A5 — 148×210mm</option>
+                                            <option value="A6">A6 — 105×148mm</option>
+                                            <option value="carte">Carte de visite — 85×55mm</option>
+                                            <option value="affiche">Affiche — 400×600mm</option>
+                                            <option value="flyer">Flyer — 210×99mm</option>
+                                        </optgroup>
+                                        <optgroup label="🎨 Logo & Identité">
+                                            <option value="logo-carre">Logo Carré — 500×500</option>
+                                            <option value="logo-rect">Logo Rectangle — 1000×500</option>
+                                            <option value="logo-hd">Logo HD — 2000×2000</option>
+                                            <option value="favicon">Favicon — 32×32</option>
+                                            <option value="watermark">Filigrane — 800×400</option>
+                                            <option value="signature">Signature Email — 600×200</option>
+                                        </optgroup>
+                                        <optgroup label="📱 Social Media">
+                                            <option value="ig-post">Instagram Post — 1080×1080</option>
+                                            <option value="ig-story" selected>Instagram Story — 1080×1920</option>
+                                            <option value="ig-reels">Instagram Reels — 1080×1920</option>
+                                            <option value="fb-post">Facebook Post — 1200×630</option>
+                                            <option value="fb-cover">Facebook Cover — 851×315</option>
+                                            <option value="fb-story">Facebook Story — 1080×1920</option>
+                                            <option value="tiktok">TikTok — 1080×1920</option>
+                                            <option value="twitter">Twitter/X Post — 1600×900</option>
+                                            <option value="linkedin">LinkedIn Post — 1200×627</option>
+                                            <option value="pinterest">Pinterest — 1000×1500</option>
+                                        </optgroup>
+                                        <optgroup label="🎬 Vidéo & Web">
+                                            <option value="yt-thumb">YouTube Thumbnail — 1280×720</option>
+                                            <option value="yt-banner">Bannière YouTube — 2560×1440</option>
+                                            <option value="web-banner">Bannière Web — 728×90</option>
+                                            <option value="leaderboard">Leaderboard — 970×250</option>
+                                            <option value="display">Display Medium — 300×250</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-star"></i> Mode IA</label>
+                                    <select id="modeia">
+                                        <option value="standard">Standard</option>
+                                        <option value="expert">Expert</option>
+                                        <option value="ultra">Ultra Premium</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group full">
+                                    <label><i class="fas fa-tag"></i> Nom de Marque</label>
+                                    <input type="text" id="marque" placeholder="Ex : Horizon Luxe, Zephyr Tech...">
+                                </div>
+
+                                <div class="form-group full">
+                                    <label><i class="fas fa-bullhorn"></i> Message Principal / Accroche</label>
+                                    <input type="text" id="promo"
+                                        placeholder="Ex : L'élégance redéfinie, Innovation sans limite...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-ticket"></i> Offre / Prix</label>
+                                    <input type="text" id="prix" placeholder="Ex : À partir de 299€">
+                                </div>
+
+                                <div class="form-group">
+                                    <label><i class="fas fa-hand-pointer"></i> Bouton CTA</label>
+                                    <input type="text" id="cta" placeholder="Ex : Découvrir, Acheter maintenant">
+                                </div>
+
+                            </div>
+
+                            <!-- ASSETS INTELLIGENTS -->
+                            <div class="smart-assets" id="smartAssets">
+                                <div class="smart-assets-header">
+                                    <h4><i class="fas fa-wand-magic-sparkles"></i> Assets Intelligents</h4>
+                                    <span class="auto-badge">AUTO</span>
+                                </div>
+                                <p class="assets-hint">Sélectionnez un secteur pour voir les assets recommandés</p>
+                                <div class="assets-tags" id="assetsTags"></div>
+                            </div>
+
+                            <div class="double-btn">
+                                <button class="generate-btn" onclick="genererPrompt()">
+                                    <i class="fas fa-bolt"></i> GÉNÉRER
+                                </button>
+                                <button class="reset-btn" onclick="resetForm()">
+                                    <i class="fas fa-rotate-left"></i> RESET
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- RIGHT : OUTPUT -->
+                    <div class="studio-right">
+
+                        <!-- APERÇU DYNAMIQUE -->
+                        <div class="panel preview-panel">
+                            <h3><i class="fas fa-eye"></i> Aperçu Dynamique</h3>
+                            <div id="previewVisual" class="preview-visual">
+                                <div class="preview-empty">
+                                    <i class="fas fa-image"></i>
+                                    <span>Configurez et générez</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PROMPT OUTPUT -->
+                        <div class="panel output-panel">
+                            <div class="output-header">
+                                <h3><i class="fas fa-terminal"></i> Prompt Output</h3>
+                                <div class="variant-tabs">
+                                    <button class="var-tab active" onclick="showVariant(this,'quick')">Rapide</button>
+                                    <button class="var-tab" onclick="showVariant(this,'ad')">Pub</button>
+                                    <button class="var-tab" onclick="showVariant(this,'cinema')">Cinéma</button>
+                                    <button class="var-tab" onclick="showVariant(this,'native')">Natif</button>
+                                </div>
+                            </div>
+
+                            <textarea id="resultat" readonly
+                                placeholder="Votre prompt apparaîtra ici après génération..."></textarea>
+                            <!-- ASSETS ACTIFS -->
+                            <div class="active-assets-panel" id="activeAssetsPanel" style="display:none">
+                                <div class="active-assets-header">
+                                    <i class="fas fa-cube"></i>
+                                    <span>Assets injectés</span>
+                                    <div class="active-assets-count" id="activeAssetsCount">0</div>
+                                </div>
+                                <div class="active-assets-list" id="activeAssetsList"></div>
+                                <button class="clear-assets-btn" onclick="clearAllAssets()">
+                                    <i class="fas fa-times"></i> Tout retirer
+                                </button>
+                            </div>
+                            <!-- DOCTOR IA -->
+                            <div class="doctor-ia" id="doctorIA" style="display:none">
+                                <div class="doctor-header">
+                                    <i class="fas fa-stethoscope"></i>
+                                    <span>Analyse IA</span>
+                                    <div class="score-badge" id="iaScore">—</div>
+                                </div>
+                                <p id="iaAdvice" class="doctor-advice"></p>
+                                <button class="optimize-btn" onclick="optimiserPrompt()">
+                                    <i class="fas fa-wand-magic-sparkles"></i> Optimiser le prompt
+                                </button>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button onclick="copierPrompt()"><i class="fas fa-copy"></i> Copier</button>
+                                <button onclick="ajouterFavori()"><i class="fas fa-star"></i> Favori</button>
+                                <button onclick="exporterPrompt()"><i class="fas fa-download"></i> Export</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============= PAGE : VISUAL DNA ============= -->
+            <section id="page-visual" class="page-section">
+
+                <div class="visual-dna-layout">
+
+                    <!-- PALETTE -->
+                    <div class="panel">
+                        <h3><i class="fas fa-droplet"></i> Palette de Marque</h3>
+                        <p class="panel-desc">Définissez vos couleurs signature, réutilisées à chaque génération.</p>
+                        <div class="color-grid" id="colorGrid">
+                            <div class="color-option selected" data-palette="noir-or" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#000,#d4af37)"></div>
+                                <span>Noir & Or</span>
+                            </div>
+                            <div class="color-option" data-palette="bleu-neon" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#0a0a1a,#0078ff)">
+                                </div>
+                                <span>Bleu Néon</span>
+                            </div>
+                            <div class="color-option" data-palette="rouge-noir" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#1a0000,#cc0000)">
+                                </div>
+                                <span>Rouge & Noir</span>
+                            </div>
+                            <div class="color-option" data-palette="beige-blanc" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#f5f0e8,#fff)"></div>
+                                <span>Beige & Blanc</span>
+                            </div>
+                            <div class="color-option" data-palette="rose-nude" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#f0d0c0,#e8a090)">
+                                </div>
+                                <span>Rose Nude</span>
+                            </div>
+                            <div class="color-option" data-palette="violet-neon" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#1a0030,#9f5cff)">
+                                </div>
+                                <span>Violet Néon</span>
+                            </div>
+                            <div class="color-option" data-palette="blanc-argent" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#e0e0e0,#fff)"></div>
+                                <span>Blanc & Argent</span>
+                            </div>
+                            <div class="color-option" data-palette="terre" onclick="selectPalette(this)">
+                                <div class="color-swatch" style="background:linear-gradient(135deg,#3d2b1f,#a0724a)">
+                                </div>
+                                <span>Tons Terre</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TYPOGRAPHIE -->
+                    <div class="panel">
+                        <h3><i class="fas fa-font"></i> Typographie Signature</h3>
+                        <p class="panel-desc">Style typographique intégré dans chaque prompt généré.</p>
+                        <div class="typo-grid" id="typoGrid">
+                            <div class="typo-option selected" data-typo="serif-luxe" onclick="selectTypo(this)">
+                                <span class="typo-preview" style="font-family:Georgia,serif">Aa</span>
+                                <p>Serif Luxe</p>
+                                <span>Élégant · Intemporel</span>
+                            </div>
+                            <div class="typo-option" data-typo="sans-moderne" onclick="selectTypo(this)">
+                                <span class="typo-preview" style="font-family:'Poppins',sans-serif">Aa</span>
+                                <p>Sans Moderne</p>
+                                <span>Propre · Contemporain</span>
+                            </div>
+                            <div class="typo-option" data-typo="condensed" onclick="selectTypo(this)">
+                                <span class="typo-preview"
+                                    style="font-family:'Arial Narrow',sans-serif;letter-spacing:2px">Aa</span>
+                                <p>Condensed Bold</p>
+                                <span>Impact · Sportif</span>
+                            </div>
+                            <div class="typo-option" data-typo="script" onclick="selectTypo(this)">
+                                <span class="typo-preview" style="font-family:cursive">Aa</span>
+                                <p>Script Élégant</p>
+                                <span>Artisanal · Raffiné</span>
+                            </div>
+                            <div class="typo-option" data-typo="mono" onclick="selectTypo(this)">
+                                <span class="typo-preview" style="font-family:monospace">Aa</span>
+                                <p>Monospace</p>
+                                <span>Tech · Digital</span>
+                            </div>
+                            <div class="typo-option" data-typo="display" onclick="selectTypo(this)">
+                                <span class="typo-preview"
+                                    style="font-family:'Syne',sans-serif;font-weight:800">Aa</span>
+                                <p>Display Bold</p>
+                                <span>Éditorial · Fort</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ASSETS BOOSTERS -->
+                    <div class="panel full-width-panel">
+                        <div class="assets-panel-header">
+                            <div>
+                                <h3><i class="fas fa-cube"></i> Assets Boosters</h3>
+                                <p class="panel-desc">Cochez les assets à injecter automatiquement dans vos prompts.</p>
+                            </div>
+                            <button class="save-dna-btn" onclick="saveDNA()">
+                                <i class="fas fa-save"></i> Sauvegarder ADN
+                            </button>
+                        </div>
+
+                        <div class="assets-families">
+
+                            <div class="asset-family">
+                                <h4><i class="fas fa-sun"></i> Lighting</h4>
+                                <div class="asset-checks" id="lightingAssets">
+                                    <label><input type="checkbox" value="soft studio lighting"> Soft Studio</label>
+                                    <label><input type="checkbox" value="golden hour sunlight"> Golden Hour</label>
+                                    <label><input type="checkbox" value="dramatic rim lighting"> Rim Light</label>
+                                    <label><input type="checkbox" value="neon glow ambient"> Neon Glow</label>
+                                    <label><input type="checkbox" value="cinematic backlight"> Backlight</label>
+                                    <label><input type="checkbox" value="natural diffused light"> Diffused</label>
+                                </div>
+                            </div>
+
+                            <div class="asset-family">
+                                <h4><i class="fas fa-camera"></i> Camera</h4>
+                                <div class="asset-checks" id="cameraAssets">
+                                    <label><input type="checkbox" value="macro photography"> Macro</label>
+                                    <label><input type="checkbox" value="wide angle lens"> Wide Angle</label>
+                                    <label><input type="checkbox" value="aerial drone view"> Aerial</label>
+                                    <label><input type="checkbox" value="extreme close-up"> Close-Up</label>
+                                    <label><input type="checkbox" value="85mm portrait lens"> Portrait 85mm</label>
+                                    <label><input type="checkbox" value="low angle dramatic"> Low Angle</label>
+                                </div>
+                            </div>
+
+                            <div class="asset-family">
+                                <h4><i class="fas fa-circle-half-stroke"></i> Texture</h4>
+                                <div class="asset-checks" id="textureAssets">
+                                    <label><input type="checkbox" value="velvet surface texture"> Velvet</label>
+                                    <label><input type="checkbox" value="brushed metallic finish"> Metallic</label>
+                                    <label><input type="checkbox" value="frosted glass effect"> Frosted Glass</label>
+                                    <label><input type="checkbox" value="matte smooth surface"> Matte</label>
+                                    <label><input type="checkbox" value="glossy reflective"> Glossy</label>
+                                    <label><input type="checkbox" value="natural wood grain"> Wood</label>
+                                </div>
+                            </div>
+
+                            <div class="asset-family">
+                                <h4><i class="fas fa-cloud"></i> Mood</h4>
+                                <div class="asset-checks" id="moodAssets">
+                                    <label><input type="checkbox" value="elegant sophisticated mood"> Elegant</label>
+                                    <label><input type="checkbox" value="powerful aggressive energy"> Aggressive</label>
+                                    <label><input type="checkbox" value="dreamy ethereal atmosphere"> Dreamy</label>
+                                    <label><input type="checkbox" value="cinematic dark tone"> Cinematic</label>
+                                    <label><input type="checkbox" value="fresh clean minimal"> Minimal</label>
+                                    <label><input type="checkbox" value="warm inviting cozy"> Warm</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ============= PAGE : CAMPAIGN BUILDER ============= -->
+            <section id="page-campaign" class="page-section">
+
+                <div class="campaign-layout">
+
+                    <div class="panel campaign-config">
+                        <h3><i class="fas fa-bullseye"></i> Configuration Campagne</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group full">
+                                <label>Nom de la Campagne</label>
+                                <input type="text" id="campNom" placeholder="Ex : Lancement Collection Automne">
+                            </div>
+                            <div class="form-group">
+                                <label>Secteur</label>
+                                <select id="campSecteur">
+                                    <option value="mode">Mode / Vêtements</option>
+                                    <option value="parfum">Parfum / Cosmétique</option>
+                                    <option value="immobilier">Immobilier</option>
+                                    <option value="tech">Tech</option>
+                                    <option value="restaurant">Restaurant / Food</option>
+                                    <option value="fitness">Fitness</option>
+                                    <option value="evenement">Événementiel</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Objectif</label>
+                                <select id="campObjectif">
+                                    <option value="notoriete">Notoriété</option>
+                                    <option value="vente">Conversion / Vente</option>
+                                    <option value="engagement">Engagement</option>
+                                    <option value="lancement">Lancement Produit</option>
+                                </select>
+                            </div>
+                            <div class="form-group full">
+                                <label>Produit / Offre</label>
+                                <input type="text" id="campProduit"
+                                    placeholder="Ex : Nouveau parfum ÉLITE — Édition limitée">
+                            </div>
+                        </div>
+
+                        <button class="generate-btn full-btn" onclick="genererCampagne()">
+                            <i class="fas fa-layer-group"></i> GÉNÉRER LA CAMPAGNE
+                        </button>
+                    </div>
+
+                    <div class="campaign-output" id="campaignOutput">
+
+                        <div class="campaign-empty" id="campaignEmpty">
+                            <i class="fas fa-layer-group"></i>
+                            <p>Configurez et lancez la génération pour voir vos 3 prompts de campagne</p>
+                        </div>
+
+                        <!-- POST 1 : HOOK -->
+                        <div class="campaign-post" id="campPost1" style="display:none">
+                            <div class="post-header">
+                                <div class="post-number">01</div>
+                                <div>
+                                    <h4>POST ACCROCHE</h4>
+                                    <span>Attirer l'attention</span>
+                                </div>
+                                <button onclick="copierPost(1)"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <textarea id="campPrompt1" readonly></textarea>
+                        </div>
+
+                        <!-- POST 2 : PRÉSENTATION -->
+                        <div class="campaign-post" id="campPost2" style="display:none">
+                            <div class="post-header">
+                                <div class="post-number">02</div>
+                                <div>
+                                    <h4>POST PRÉSENTATION</h4>
+                                    <span>Présenter l'offre</span>
+                                </div>
+                                <button onclick="copierPost(2)"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <textarea id="campPrompt2" readonly></textarea>
+                        </div>
+
+                        <!-- POST 3 : CTA -->
+                        <div class="campaign-post" id="campPost3" style="display:none">
+                            <div class="post-header">
+                                <div class="post-number">03</div>
+                                <div>
+                                    <h4>POST CONVERSION</h4>
+                                    <span>Déclencher l'achat</span>
+                                </div>
+                                <button onclick="copierPost(3)"><i class="fas fa-copy"></i></button>
+                            </div>
+                            <textarea id="campPrompt3" readonly></textarea>
+                        </div>
+
+                        <button class="export-camp-btn" id="exportCampBtn" style="display:none"
+                            onclick="exporterCampagne()">
+                            <i class="fas fa-download"></i> Exporter la Campagne
+                        </button>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ============= PAGE : ASSETS PREMIUM ============= -->
+            <section id="page-assets" class="page-section">
+
+                <div class="assets-page-header">
+                    <div>
+                        <h2>Assets Premium</h2>
+                        <p>Bibliothèque d'assets liés au secteur actif. Cliquez pour injecter dans le prochain prompt.
+                        </p>
+                    </div>
+                    <div class="sector-indicator" id="assetsSectorIndicator">
+                        <i class="fas fa-industry"></i> <span id="assetsSectorName">Aucun secteur actif</span>
+                    </div>
+                </div>
+
+                <div class="assets-full-grid" id="assetsFullGrid">
+                    <div class="assets-empty-state">
+                        <i class="fas fa-cube"></i>
+                        <p>Sélectionnez un secteur dans le Prompt Studio pour voir les assets recommandés</p>
+                        <button onclick="showPage('studio', document.querySelector('[data-page=studio]'))">
+                            Aller au Studio
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============= PAGE : EXPORT CENTER ============= -->
+            <section id="page-export" class="page-section">
+
+                <div class="export-layout">
+
+                    <div class="panel export-config">
+                        <h3><i class="fas fa-file-export"></i> Export Center</h3>
+                        <p class="panel-desc">Exportez vos prompts formatés selon la plateforme cible.</p>
+
+                        <div class="export-platform-select">
+                            <label>Format d'export</label>
+                            <div class="export-plat-btns">
+                                <button class="exp-plat active" onclick="setExportPlatform(this,'midjourney')">
+                                    <i class="fas fa-wand-magic-sparkles"></i> Midjourney
+                                </button>
+                                <button class="exp-plat" onclick="setExportPlatform(this,'leonardo')">
+                                    <i class="fas fa-pen-nib"></i> Leonardo
+                                </button>
+                                <button class="exp-plat" onclick="setExportPlatform(this,'dalle')">
+                                    <i class="fas fa-robot"></i> DALL-E
+                                </button>
+                                <button class="exp-plat" onclick="setExportPlatform(this,'txt')">
+                                    <i class="fas fa-file-alt"></i> Brut .txt
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="export-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="exportAll" checked>
+                                <span>Inclure tous les prompts</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="exportFavOnly">
+                                <span>Favoris uniquement</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="exportParams" checked>
+                                <span>Inclure paramètres techniques</span>
+                            </label>
+                        </div>
+
+                        <div class="export-btns">
+                            <button class="generate-btn" onclick="exporterFormate()">
+                                <i class="fas fa-download"></i> Exporter
+                            </button>
+                            <button class="reset-btn" onclick="copierTout()">
+                                <i class="fas fa-copy"></i> Copier tout
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="panel export-preview">
+                        <h3><i class="fas fa-eye"></i> Aperçu Export</h3>
+                        <div class="export-format-badge" id="exportFormatBadge">FORMAT : MIDJOURNEY</div>
+                        <textarea id="exportPreview" readonly
+                            placeholder="L'aperçu de votre export apparaîtra ici..."></textarea>
+                        <div class="export-meta" id="exportMeta">
+                            <span id="exportCount">0 prompts</span>
+                            <span id="exportSize">0 caractères</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ============= PAGE : HISTORY VAULT ============= -->
+            <section id="page-history" class="page-section">
+
+                <div class="history-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="historySearch" placeholder="Rechercher dans l'historique..."
+                            oninput="filterHistory()">
+                    </div>
+                    <div class="history-filters">
+                        <select id="historyFilterSector" onchange="filterHistory()">
+                            <option value="">Tous les secteurs</option>
+                            <option value="parfum">Parfum</option>
+                            <option value="mode">Mode</option>
+                            <option value="immobilier">Immobilier</option>
+                            <option value="tech">Tech</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="fitness">Fitness</option>
+                        </select>
+                        <button class="clear-history-btn" onclick="clearHistory()">
+                            <i class="fas fa-trash"></i> Vider
+                        </button>
+                    </div>
+                </div>
+
+                <div class="history-grid" id="historyGrid">
+                    <div class="history-empty">
+                        <i class="fas fa-clock-rotate-left"></i>
+                        <p>Votre historique est vide.<br>Générez des prompts pour les retrouver ici.</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============= PAGE : PARAMÈTRES ============= -->
+            <section id="page-settings" class="page-section">
+
+                <div class="settings-layout">
+
+                    <div class="panel">
+                        <h3><i class="fas fa-info-circle"></i> À propos</h3>
+                        <div class="settings-info">
+                            <div class="settings-row">
+                                <span>Version</span>
+                                <strong>VisuForge AI v1.0</strong>
+                            </div>
+                            <div class="settings-row">
+                                <span>Moteur</span>
+                                <strong>Premium Prompt Engine</strong>
+                            </div>
+                            <div class="settings-row">
+                                <span>Plateformes</span>
+                                <strong>Midjourney · Leonardo · DALL-E</strong>
+                            </div>
+                            <div class="settings-row">
+                                <span>Stockage</span>
+                                <strong>LocalStorage navigateur</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3><i class="fas fa-database"></i> Gestion des Données</h3>
+                        <p class="panel-desc">Toutes vos données sont stockées localement dans votre navigateur.</p>
+                        <div class="settings-actions">
+                            <button class="settings-btn" onclick="exporterToutLocal()">
+                                <i class="fas fa-download"></i> Sauvegarder mes données
+                            </button>
+                            <button class="settings-btn danger" onclick="resetTout()">
+                                <i class="fas fa-trash"></i> Réinitialiser tout
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3><i class="fas fa-palette"></i> Plateforme par défaut</h3>
+                        <div class="default-platform-select">
+                            <label><input type="radio" name="defPlat" value="Midjourney" checked> Midjourney</label>
+                            <label><input type="radio" name="defPlat" value="Leonardo"> Leonardo AI</label>
+                            <label><input type="radio" name="defPlat" value="DALL-E"> DALL-E 3</label>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div id="notify" class="notify">Action</div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
