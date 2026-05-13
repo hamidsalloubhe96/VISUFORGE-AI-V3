@@ -1,6 +1,6 @@
 /* =============================================
    VISUFORGE AI — SCRIPT.JS
-   Logique complète
+   Logique complète + Analyser un Design
    ============================================= */
 
 /* ─── STATE ─── */
@@ -12,6 +12,7 @@ let state = {
     currentPrompt:  "",
     variants:       null,
     autoAssets:     [],
+    analyses:       [],
     dna: {
         palette: "noir-or",
         typo:    "serif-luxe",
@@ -22,33 +23,9 @@ let state = {
 /* ─── SONS ─── */
 function jouerSon(type) {
     try {
-        const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (type === "success") {
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(520, ctx.currentTime);
-            osc.frequency.linearRampToValueAtTime(780, ctx.currentTime + 0.3);
-            osc.frequency.linearRampToValueAtTime(640, ctx.currentTime + 0.6);
-            gain.gain.setValueAtTime(0.18, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-        }
-
-        if (type === "error") {
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(440, ctx.currentTime);
-            osc.frequency.linearRampToValueAtTime(380, ctx.currentTime + 0.15);
-            osc.frequency.linearRampToValueAtTime(420, ctx.currentTime + 0.4);
-            osc.frequency.linearRampToValueAtTime(360, ctx.currentTime + 0.7);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-        }
-
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 1);
+        const son = new Audio(`sounds/${type}.mp3`);
+        son.volume = 0.7;
+        son.play();
     } catch(e) {}
 }
 
@@ -60,6 +37,7 @@ window.onload = function () {
     updateExportPreview();
     syncPlatformBadge();
     loadDNAState();
+    initUploadZone();
 };
 
 /* ============================================
@@ -67,14 +45,15 @@ window.onload = function () {
    ============================================ */
 
 const PAGE_META = {
-    dashboard: { title: "Tableau de bord",    sub: "Vue d'ensemble de votre activité créative" },
-    studio:    { title: "Prompt Studio",      sub: "Générez des prompts pour Midjourney, Leonardo & DALL-E" },
-    visual:    { title: "ADN Visuel",         sub: "Configurez votre identité visuelle — palette, typo, assets" },
-    campaign:  { title: "Constructeur de Campagne", sub: "Générez une séquence de 3 prompts coordonnés" },
-    assets:    { title: "Assets Premium",     sub: "Bibliothèque d'assets liés à votre secteur actif" },
-    export:    { title: "Centre d'Export",    sub: "Exportez vos prompts formatés par plateforme" },
-    history:   { title: "Historique",         sub: "Historique complet de vos prompts générés" },
-    settings:  { title: "Paramètres",         sub: "Configuration générale et gestion des données" },
+    dashboard: { title: "Tableau de bord",          sub: "Vue d'ensemble de votre activité créative" },
+    studio:    { title: "Prompt Studio",             sub: "Générez des prompts pour Midjourney, Leonardo & DALL-E" },
+    visual:    { title: "ADN Visuel",                sub: "Configurez votre identité visuelle — palette, typo, assets" },
+    campaign:  { title: "Constructeur de Campagne",  sub: "Générez une séquence de 3 prompts coordonnés" },
+    assets:    { title: "Assets Premium",            sub: "Bibliothèque d'assets liés à votre secteur actif" },
+    export:    { title: "Centre d'Export",           sub: "Exportez vos prompts formatés par plateforme" },
+    history:   { title: "Historique",                sub: "Historique complet de vos prompts générés" },
+    analyzer:  { title: "Analyser un Design",        sub: "Importez une image et récupérez son prompt automatiquement" },
+    settings:  { title: "Paramètres",                sub: "Configuration générale et gestion des données" },
 };
 
 function showPage(page, el) {
@@ -149,7 +128,6 @@ function autoRemplir(sector) {
         if (el && defaults[id]) el.value = defaults[id];
     });
 
-    // Sync typo Visual DNA
     if (defaults.typo) {
         state.dna.typo = defaults.typo;
         document.querySelectorAll(".typo-option").forEach(el => {
@@ -157,7 +135,6 @@ function autoRemplir(sector) {
         });
     }
 
-    // Sync palette Visual DNA
     if (defaults.couleur) {
         state.dna.palette = defaults.couleur;
         document.querySelectorAll(".color-option").forEach(el => {
@@ -217,28 +194,24 @@ function genererPrompt() {
     const prix    = document.getElementById("prix").value.trim();
     const cta     = document.getElementById("cta").value.trim();
 
-    // Validation
     if (!marque && !promo) {
         jouerSon("error");
         notifier("Ajoutez au moins un nom de marque ou un message");
         return;
     }
 
-    // Données enrichies
-    const intro         = SECTOR_INTRO[sector]     || "Create a premium commercial visual.";
-    const styleData     = STYLES[style]             || { en: style };
-    const paletteData   = PALETTES[couleur]          || { en: couleur };
-    const modeBoost     = MODE_BOOST[modeia]         || "";
+    const intro         = SECTOR_INTRO[sector]        || "Create a premium commercial visual.";
+    const styleData     = STYLES[style]                || { en: style };
+    const paletteData   = PALETTES[couleur]             || { en: couleur };
+    const modeBoost     = MODE_BOOST[modeia]            || "";
     const platformParam = (PLATFORM_PARAMS[state.platform] || {})[format] || "";
-    const typoData      = TYPOGRAPHIES[state.dna.typo] || { en: "" };
+    const typoData      = TYPOGRAPHIES[state.dna.typo]  || { en: "" };
 
-    // Assets
-    const autoA    = getAutoAssets(sector);
-    const manualA  = getDNAAssets();
+    const autoA     = getAutoAssets(sector);
+    const manualA   = getDNAAssets();
     const allAssets = [...new Set([...autoA, ...manualA, ...state.autoAssets])];
     const assetsStr = allAssets.length ? allAssets.join(", ") : "";
 
-    // Contexte marque
     const brandCtx = [
         marque && `Marque : ${marque}`,
         promo  && `Message : "${promo}"`,
@@ -248,12 +221,11 @@ function genererPrompt() {
 
     const baseCore = `${intro} Style : ${styleData.en}. Palette : ${paletteData.en}. ${brandCtx ? brandCtx + "." : ""}`;
 
-    // Construire variantes
     const variants = {
         quick:  buildQuickPrompt(baseCore, assetsStr, platformParam),
         ad:     buildAdPrompt(baseCore, visuel, assetsStr, modeBoost, platformParam),
         cinema: buildCinemaPrompt(baseCore, assetsStr, platformParam),
-        native: buildNativePrompt(baseCore, visuel, styleData, paletteData, assetsStr, typoData, modeBoost, format, platformParam),
+        native: buildNativePrompt(baseCore, visuel, assetsStr, typoData, modeBoost, platformParam),
     };
 
     state.currentPrompt = variants[state.activeVariant];
@@ -317,7 +289,7 @@ function buildCinemaPrompt(core, assets, params) {
     ].filter(Boolean).join(" ").trim();
 }
 
-function buildNativePrompt(core, visuel, styleData, paletteData, assets, typo, boost, format, params) {
+function buildNativePrompt(core, visuel, assets, typo, boost, params) {
     return [
         core,
         `Visuel : ${visuel}. Typographie : ${typo.en || "police premium"}.`,
@@ -350,8 +322,8 @@ function optimiserPrompt() {
         return;
     }
 
-    const sector = document.getElementById("niche").value;
-    const data   = SECTOR_ASSETS[sector];
+    const sector    = document.getElementById("niche").value;
+    const data      = SECTOR_ASSETS[sector];
     const manquants = [];
 
     if (data) {
@@ -553,10 +525,10 @@ function renderAssetsPage() {
 
     const data = SECTOR_ASSETS[sector];
     const families = [
-        { key: "lighting", icon: "fas fa-sun",                label: "Éclairage" },
-        { key: "camera",   icon: "fas fa-camera",             label: "Caméra" },
-        { key: "texture",  icon: "fas fa-circle-half-stroke", label: "Texture" },
-        { key: "mood",     icon: "fas fa-cloud",              label: "Ambiance" },
+        { key: "lighting", icon: "fas fa-sun",                 label: "Éclairage" },
+        { key: "camera",   icon: "fas fa-camera",              label: "Caméra" },
+        { key: "texture",  icon: "fas fa-circle-half-stroke",  label: "Texture" },
+        { key: "mood",     icon: "fas fa-cloud",               label: "Ambiance" },
         { key: "extra",    icon: "fas fa-wand-magic-sparkles", label: "Extras Secteur" },
     ];
 
@@ -566,9 +538,9 @@ function renderAssetsPage() {
             <h4><i class="${fam.icon}"></i> ${fam.label}</h4>
             <div class="asset-tags-list">
                 ${items.map(item => `
-                    <div class="asset-tag-item ${state.autoAssets.includes(item) ? 'injected' : ''}"
+                    <div class="asset-tag-item ${state.autoAssets.includes(item) ? "injected" : ""}"
                          onclick="injectAsset(this,'${item}')">
-                        <i class="fas ${state.autoAssets.includes(item) ? 'fa-check' : 'fa-plus'}"></i>
+                        <i class="fas ${state.autoAssets.includes(item) ? "fa-check" : "fa-plus"}"></i>
                         <span>${item}</span>
                     </div>
                 `).join("")}
@@ -667,7 +639,7 @@ function updatePreview(sector, promo, prix, cta, style) {
     const colors  = PREVIEW_COLORS[couleur] || PREVIEW_COLORS["noir-or"];
 
     preview.innerHTML = `
-        <div class="preview-content" style="
+        <div style="
             background:${colors.bg};
             width:100%; height:100%;
             display:flex; flex-direction:column;
@@ -1028,6 +1000,7 @@ function supprimerPrompt(idx) {
     updateCounters();
     renderHistoryGrid();
     updateExportPreview();
+    jouerSon("success");
     notifier("Prompt supprimé");
 }
 
@@ -1038,6 +1011,7 @@ function clearHistory() {
     updateCounters();
     renderHistoryGrid();
     updateExportPreview();
+    jouerSon("success");
     notifier("Historique vidé");
 }
 
@@ -1064,6 +1038,249 @@ function copierDernier() {
 }
 
 /* ============================================
+   ANALYSER UN DESIGN
+   ============================================ */
+
+let analyzerImageBase64 = null;
+let analyzerImageType   = null;
+
+function initUploadZone() {
+    const zone = document.getElementById("uploadZone");
+    if (!zone) return;
+
+    zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        zone.classList.add("drag-over");
+    });
+
+    zone.addEventListener("dragleave", () => {
+        zone.classList.remove("drag-over");
+    });
+
+    zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.classList.remove("drag-over");
+        const file = e.dataTransfer.files[0];
+        if (file) traiterImageFichier(file);
+    });
+}
+
+function onImageSelected(event) {
+    const file = event.target.files[0];
+    if (file) traiterImageFichier(file);
+}
+
+function traiterImageFichier(file) {
+    if (!file.type.startsWith("image/")) {
+        jouerSon("error");
+        notifier("Format non supporté — utilisez JPG, PNG ou WEBP");
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        jouerSon("error");
+        notifier("Image trop lourde — maximum 5MB");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const result = e.target.result;
+
+        // Extraire base64 et type
+        const parts         = result.split(",");
+        analyzerImageBase64 = parts[1];
+        analyzerImageType   = file.type;
+
+        // Afficher aperçu
+        const placeholder = document.getElementById("uploadPlaceholder");
+        const previewImg  = document.getElementById("uploadPreviewImg");
+
+        if (placeholder) placeholder.style.display = "none";
+        if (previewImg) {
+            previewImg.src = result;
+            previewImg.style.display = "block";
+        }
+
+        // Activer le bouton
+        const btn = document.getElementById("analyzerBtn");
+        if (btn) btn.disabled = false;
+
+        jouerSon("success");
+        notifier("Image chargée ✓");
+    };
+    reader.readAsDataURL(file);
+}
+
+async function analyserDesign() {
+    if (!analyzerImageBase64) {
+        jouerSon("error");
+        notifier("Importez une image d'abord");
+        return;
+    }
+
+    const platform = document.getElementById("analyzerPlatform")?.value || "Midjourney";
+    const detail   = document.getElementById("analyzerDetail")?.value   || "standard";
+
+    // UI loading
+    const loading  = document.getElementById("analyzerLoading");
+    const result   = document.getElementById("analyzerResult");
+    const actions  = document.getElementById("analyzerActions");
+    const status   = document.getElementById("analyzerStatus");
+    const btn      = document.getElementById("analyzerBtn");
+
+    if (loading) loading.style.display = "block";
+    if (result)  result.value = "";
+    if (actions) actions.style.display = "none";
+    if (status)  { status.textContent = ""; status.className = "analyzer-status"; }
+    if (btn)     btn.disabled = true;
+
+    // Construire le prompt selon niveau de détail
+    const detailMap = {
+        standard: "Analyse cette image publicitaire et génère un prompt de reproduction précis et professionnel.",
+        detaille: "Analyse en détail cette image publicitaire : composition, éclairage, couleurs, style, ambiance, typographie, objets. Génère un prompt complet et détaillé.",
+        expert:   "Analyse de façon experte cette image publicitaire. Décris précisément : composition, éclairage studio, angle de caméra, palette de couleurs exacte, style visuel, texture, ambiance, typographie, éléments graphiques, qualité de rendu. Génère un prompt professionnel ultra-détaillé prêt à l'emploi.",
+    };
+
+    const platformInstructions = {
+        Midjourney: `Le prompt doit être formaté pour Midjourney et se terminer par les paramètres techniques appropriés (--ar, --style raw, --v 6.1).`,
+        Leonardo:   `Le prompt doit être formaté pour Leonardo AI avec les paramètres de modèle appropriés.`,
+        DALLE:      `Le prompt doit être formaté pour DALL-E 3, clair et descriptif.`,
+    };
+
+    const systemPrompt = `Tu es un expert en génération de prompts pour les IA image (Midjourney, Leonardo, DALL-E). 
+Tu analyses des visuels publicitaires et génères des prompts précis permettant de reproduire ou s'inspirer du design.
+Réponds UNIQUEMENT avec le prompt, sans explication ni commentaire.
+Le prompt doit être en anglais, professionnel et immédiatement utilisable.`;
+
+    const userPrompt = `${detailMap[detail]} ${platformInstructions[platform] || ""} 
+Réponds uniquement avec le prompt final, rien d'autre.`;
+
+    try {
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model:      "claude-sonnet-4-20250514",
+                max_tokens: 1000,
+                system:     systemPrompt,
+                messages: [{
+                    role: "user",
+                    content: [
+                        {
+                            type: "image",
+                            source: {
+                                type:       "base64",
+                                media_type: analyzerImageType,
+                                data:       analyzerImageBase64,
+                            }
+                        },
+                        {
+                            type: "text",
+                            text: userPrompt,
+                        }
+                    ]
+                }]
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message || "Erreur API");
+        }
+
+        const promptExtrait = data.content?.[0]?.text || "";
+
+        if (!promptExtrait) {
+            throw new Error("Réponse vide de l'IA");
+        }
+
+        // Afficher résultat
+        if (result)  result.value = promptExtrait;
+        if (actions) actions.style.display = "flex";
+        if (loading) loading.style.display = "none";
+        if (status) {
+            status.textContent  = "Analyse réussie ✓";
+            status.className    = "analyzer-status status-ok";
+        }
+        if (btn) btn.disabled = false;
+
+        // Sauvegarder dans analyses
+        state.analyses.unshift({
+            prompt: promptExtrait,
+            platform,
+            date: new Date().toLocaleDateString("fr-FR"),
+        });
+        localStorage.setItem("vfAnalyses", JSON.stringify(state.analyses));
+        updateCounters();
+
+        jouerSon("success");
+        notifier("Design analysé ✓");
+
+    } catch(err) {
+        if (loading) loading.style.display = "none";
+        if (status) {
+            status.textContent = "Erreur d'analyse";
+            status.className   = "analyzer-status status-error";
+        }
+        if (btn) btn.disabled = false;
+        if (result) result.value = "Erreur : " + (err.message || "Impossible d'analyser l'image.");
+
+        jouerSon("error");
+        notifier("Erreur lors de l'analyse");
+    }
+}
+
+function copierAnalyse() {
+    const texte = document.getElementById("analyzerResult")?.value;
+    if (!texte?.trim()) {
+        jouerSon("error");
+        notifier("Rien à copier");
+        return;
+    }
+    navigator.clipboard.writeText(texte).catch(() => {});
+    jouerSon("success");
+    notifier("Prompt copié ✓");
+}
+
+function envoyerAuStudio() {
+    const texte = document.getElementById("analyzerResult")?.value;
+    if (!texte?.trim()) {
+        jouerSon("error");
+        notifier("Aucun prompt à envoyer");
+        return;
+    }
+
+    // Envoyer dans le textarea du studio
+    const resultat = document.getElementById("resultat");
+    if (resultat) resultat.value = texte;
+
+    state.currentPrompt = texte;
+
+    // Naviguer vers le studio
+    showPage("studio", document.querySelector("[data-page=studio]"));
+
+    // Lancer le Doctor IA
+    runDoctorIA(texte);
+
+    jouerSon("success");
+    notifier("Prompt envoyé au Studio ✓");
+}
+
+function exporterAnalyse() {
+    const texte = document.getElementById("analyzerResult")?.value;
+    if (!texte?.trim()) {
+        jouerSon("error");
+        notifier("Rien à exporter");
+        return;
+    }
+    telecharger(texte, "visuforge_analyse.txt");
+    jouerSon("success");
+    notifier("Analyse exportée ✓");
+}
+
+/* ============================================
    STORAGE
    ============================================ */
 
@@ -1075,11 +1292,22 @@ function chargerLocal() {
     try {
         const p = localStorage.getItem("vfPrompts");
         if (p) state.prompts = JSON.parse(p);
-    } catch(e) { state.prompts = []; }
+
+        const a = localStorage.getItem("vfAnalyses");
+        if (a) state.analyses = JSON.parse(a);
+    } catch(e) {
+        state.prompts  = [];
+        state.analyses = [];
+    }
 }
 
 function exporterToutLocal() {
-    const data = { prompts: state.prompts, dna: state.dna, date: new Date().toISOString() };
+    const data = {
+        prompts:  state.prompts,
+        analyses: state.analyses,
+        dna:      state.dna,
+        date:     new Date().toISOString()
+    };
     telecharger(JSON.stringify(data, null, 2), "visuforge_backup.json");
     jouerSon("success");
     notifier("Sauvegarde exportée ✓");
@@ -1089,8 +1317,10 @@ function resetTout() {
     if (!confirm("Réinitialiser toutes les données VisuForge AI ?")) return;
     localStorage.removeItem("vfPrompts");
     localStorage.removeItem("vfDNA");
-    state.prompts   = [];
-    state.dna       = { palette: "noir-or", typo: "serif-luxe", assets: [] };
+    localStorage.removeItem("vfAnalyses");
+    state.prompts    = [];
+    state.analyses   = [];
+    state.dna        = { palette: "noir-or", typo: "serif-luxe", assets: [] };
     state.autoAssets = [];
     updateCounters();
     renderHistoryGrid();
@@ -1102,8 +1332,9 @@ function resetTout() {
    ============================================ */
 
 function updateCounters() {
-    const total = state.prompts.length;
-    const favs  = state.prompts.filter(p => p.favori).length;
+    const total    = state.prompts.length;
+    const favs     = state.prompts.filter(p => p.favori).length;
+    const analyses = state.analyses.length;
 
     ["countPrompts", "topbarPrompts"].forEach(id => {
         const el = document.getElementById(id);
@@ -1113,6 +1344,8 @@ function updateCounters() {
         const el = document.getElementById(id);
         if (el) el.textContent = favs;
     });
+    const elA = document.getElementById("countAnalyses");
+    if (elA) elA.textContent = analyses;
 }
 
 /* ============================================
@@ -1120,18 +1353,15 @@ function updateCounters() {
    ============================================ */
 
 document.addEventListener("change", function(e) {
-    // Compatibilité style/palette
     if (["style", "couleur"].includes(e.target.id)) {
         verifierCompatibilite();
     }
-    // Plateforme par défaut (settings)
     if (e.target.name === "defPlat") {
         state.platform = e.target.value;
         syncPlatformBadge();
         jouerSon("success");
         notifier("Plateforme par défaut : " + e.target.value);
     }
-    // Export options
     if (["exportFavOnly", "exportAll", "exportParams"].includes(e.target.id)) {
         updateExportPreview();
     }
